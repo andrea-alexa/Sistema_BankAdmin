@@ -5,9 +5,9 @@ import { Injectable } from '@angular/core';
 })
 export class ClientesService {
   clientes = [
-    {codigo: 'C001', nombre: 'Juan Pérez', dui: '00000000-0', telefono: '1234-5678', estado: 'Activo'},
-    {codigo: 'C002', nombre: 'María López', dui: '11111111-1', telefono: '2345-6789', estado: 'Inactivo'},
-    {codigo: 'C003', nombre: 'Carlos García', dui: '22222222-2', telefono: '3456-7890', estado: 'Activo'},
+    {codigo: 1, nombre: 'Juan Pérez', dui: '00000000-0', telefono: '1234-5678', estado: 'Activo'},
+    {codigo: 2, nombre: 'María López', dui: '11111111-1', telefono: '2345-6789', estado: 'Inactivo'},
+    {codigo: 3, nombre: 'Carlos García', dui: '22222222-2', telefono: '3456-7890', estado: 'Activo'},
   ];
 
   getClientes() {
@@ -16,10 +16,10 @@ export class ClientesService {
 
   saveCliente(cliente: any) {
     //logica
-    const nuevoCodigo = this.clientes.length > 0 ? Math.max(...this.clientes.map(c => c.codigo)) +1 : 1
+    const nuevoCodigo = this.clientes.length > 0 ? Math.max(...this.clientes.map(c => c.codigo)) + 1 : 1
 
     cliente.codigo = nuevoCodigo;
 
-    this.clientes.push();
+    this.clientes.push(cliente);
   }
 }
