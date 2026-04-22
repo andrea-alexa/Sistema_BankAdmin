@@ -26,6 +26,33 @@ export class ClienteForm {
   //inicializarFormulario
   ngOnInit(): void {
     this.buildForm();
+    this.cargarClienteSiEsEdicion();
+  }
+
+  //crear una funcion que valide si es una edicion
+  cargarClienteSiEsEdicion(): void {
+    const codigoParametro = this.route.snapshot.paramMap.get('codigo');
+
+    if (!codigoParametro) return;
+
+    this.codigoCliente = Number(codigoParametro);
+    this.editando = true;
+
+    const cliente = this.clienteService.getClientePorCodigo(this.codigoCliente);
+
+    if (!cliente) {
+      this.router.navigate(['/clientes']);
+      return;
+    }
+
+    this.clienteForm.patchValue({
+      nombre: cliente.nombre,
+      dui: cliente.dui,
+      telefono: cliente.telefono,
+      correo: cliente.correo,
+      direccion: cliente.direccion,
+      estado: cliente.estado,
+    });
   }
 
   //metodo vacio para construir nuestro grupo de formulario
@@ -51,7 +78,12 @@ export class ClienteForm {
     //crear nuestro objeto
     const cliente = this.clienteForm.value;
 
-    this.clienteService.saveCliente(cliente);
+    if (this.editando && this.codigoCliente != null) {
+      this.clienteService.updateCliente(this.codigoCliente, cliente);
+    }
+    else {
+      this.clienteService.saveCliente(cliente);
+    }
 
     //redirigir al listado de clientes
     this.router.navigate(['/clientes']);
