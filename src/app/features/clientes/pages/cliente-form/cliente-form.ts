@@ -1,7 +1,7 @@
-import { Component, inject } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from "@angular/router";
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { CommonModule } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ClientesService } from '../../services/clientes';
 
 @Component({
@@ -11,25 +11,26 @@ import { ClientesService } from '../../services/clientes';
   styleUrl: './cliente-form.css',
 })
 export class ClienteForm {
+  
   private fb = inject(FormBuilder);
   private clienteService = inject(ClientesService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
-  //formulario
+  // formulario
   clienteForm!: FormGroup;
 
-  //edicion
+  // edición
   codigoCliente: number | null = null;
   editando = false;
 
-  //inicializarFormulario
+  // inicializador del componente
   ngOnInit(): void {
     this.buildForm();
     this.cargarClienteSiEsEdicion();
   }
 
-  //crear una funcion que valide si es una edicion
+  // crear una funcin que valide si es una edicion
   cargarClienteSiEsEdicion(): void {
     const codigoParametro = this.route.snapshot.paramMap.get('codigo');
 
@@ -45,57 +46,55 @@ export class ClienteForm {
       return;
     }
 
-    this.clienteForm.patchValue({
+    this.clienteForm.patchValue({ // get, post, put, delete, patch, option
       nombre: cliente.nombre,
       dui: cliente.dui,
       telefono: cliente.telefono,
       correo: cliente.correo,
       direccion: cliente.direccion,
-      estado: cliente.estado,
+      estado: cliente.estado
     });
   }
 
-  //metodo vacio para construir nuestro grupo de formulario
+  // método vacio para construir nuestro grupo de formulario
   buildForm(): void {
     this.clienteForm = this.fb.group({
       nombre: ['', [Validators.required, Validators.minLength(3)]],
-      dui: ['', [Validators.required, Validators.pattern(/^\d{8}-\d$/)]], //expresiones regulares
+      dui: ['', [Validators.required, Validators.pattern(/^\d{8}-\d$/)]], // expresiones regulares
       telefono: ['', [Validators.required, Validators.pattern(/^\d{4}-\d{4}$/)]],
       correo: ['', [Validators.required, Validators.email]],
-      direccion: ['', [Validators.required, Validators.maxLength(150)]],
-      estado: ['Activo', [Validators.required]],
+      direccion: ['', Validators.maxLength(150)],
+      estado: ['Activo', [Validators.required]]
     });
   }
 
-  //metodo vacio para guardar el cliente
+  // método vacio para almacenar nuestro cliente
   guardar(): void {
-    //validar el formulario
-    if (this.clienteForm.invalid) {
+    // validar que el formulario sea valido
+    if (this.clienteForm.invalid){
       this.clienteForm.markAllAsTouched();
       return;
-    }
-
-    //crear nuestro objeto
+    } 
+    
+    // crear nuestro objeto
     const cliente = this.clienteForm.value;
 
-    if (this.editando && this.codigoCliente != null) {
+    if (this.editando && this.codigoCliente != null){
       this.clienteService.updateCliente(this.codigoCliente, cliente);
-    }
-    else {
+    }else {
       this.clienteService.saveCliente(cliente);
-    }
+    }   
 
-    //redirigir al listado de clientes
+    // redirija al listado de clientes
     this.router.navigate(['/clientes']);
   }
 
-  //getter and setter para los controles del formulario
-
+  // getters
   get nombre(){
-    return this.clienteForm.get('nombre');
+    return this,this.clienteForm.get('nombre');
   }
 
-  get dui(){
+  get dui() {
     return this.clienteForm.get('dui');
   }
 
